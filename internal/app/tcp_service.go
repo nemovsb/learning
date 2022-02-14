@@ -41,17 +41,19 @@ func NewTCPConnection(config TCPConfig, holdConnTime time.Duration) (*TCPConnect
 }
 
 func (c *TCPConnection) GetConnect() (net.Conn, error) {
-	if c.check() {
-		fmt.Println("##################################  Use old connect ")
-		return c.connection, nil
+	if !c.check() {
+		fmt.Println("  Use new connect ")
+		conn, err := newConnection(c.config)
+		if err != nil {
+			return nil, err
+		}
+		c.connection = conn
+		return conn, err
 	}
 
-	conn, err := newConnection(c.config)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println("##################################  Use new connect ")
-	return conn, nil
+	fmt.Println("GetConnect():  Use old connect ")
+	return c.connection, nil
+
 }
 
 func newConnection(config TCPConfig) (net.Conn, error) {
@@ -69,17 +71,25 @@ func newConnection(config TCPConfig) (net.Conn, error) {
 func (c *TCPConnection) check() bool {
 
 	buffer := make([]byte, 1)
-	c.connection.SetReadDeadline(time.Now())
+	c.connection.SetReadDeadline(time.Now().Add(10 * time.Millisecond))
 	_, err := c.connection.Read(buffer)
+	fmt.Println(" c.connection.Read(buffer) err: ", err)
 	if err == io.EOF {
 		c.Close()
 
 		fmt.Println("Connect false, err: ", err)
+		//fmt.Println("net.ErrClosed: ", net.ErrClosed)
 
 		return false
-	} else {
-		c.connection.SetReadDeadline(time.Now().Add(10 * time.Millisecond))
 	}
+
+	//if err != nil {
+	//	fmt.Println("Connect false, err: ", err)
+	//	return false
+	//}
+
+	//var zero time.Time
+	//c.connection.SetReadDeadline(zero)
 
 	fmt.Println("Connect true")
 
@@ -112,7 +122,7 @@ func (s *StringConvertTCP) MultipleStrTCP(reqStr string, connect TCPConnector) (
 
 	s.reqStr = reqStr
 
-	fmt.Println("##############################################################s.reqStr: ", s.reqStr)
+	fmt.Printf("s.reqStr: %q\n", s.reqStr)
 
 	//addrTCP := fmt.Sprintf("%s:%s", s.config.Host, s.config.Port)
 

@@ -64,9 +64,9 @@ func (h *TCPHandler) MultiplyHandle(ctx *gin.Context) {
 	requestForTCPApp := fmt.Sprintf(pattern, reqBody[0].A, reqBody[0].B, reqBody[1].A, reqBody[1].B)
 
 	fmt.Println("MultipleStrTCP start")
-	fmt.Println("\nrequestForTCPApp: ", requestForTCPApp)
+	fmt.Printf("requestForTCPApp: %q\n", requestForTCPApp)
 	message, err := h.strConv.MultipleStrTCP(requestForTCPApp, h.connect)
-	fmt.Println("message: ", message)
+	fmt.Printf("message: %q\n", message)
 	fmt.Println("MultipleStrTCP finish")
 
 	if err != nil {
