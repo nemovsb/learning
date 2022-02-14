@@ -71,7 +71,7 @@ func newConnection(config TCPConfig) (net.Conn, error) {
 func (c *TCPConnection) check() bool {
 
 	buffer := make([]byte, 1)
-	c.connection.SetReadDeadline(time.Now().Add(10 * time.Millisecond))
+	c.connection.SetReadDeadline(time.Now())
 	_, err := c.connection.Read(buffer)
 	fmt.Println(" c.connection.Read(buffer) err: ", err)
 	if err == io.EOF {
