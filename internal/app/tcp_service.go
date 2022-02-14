@@ -71,12 +71,14 @@ func (c *TCPConnection) check() bool {
 	buffer := make([]byte, 1)
 	c.connection.SetReadDeadline(time.Now())
 	_, err := c.connection.Read(buffer)
-	if err != nil {
+	if err == io.EOF {
 		c.Close()
 
 		fmt.Println("Connect false, err: ", err)
 
 		return false
+	} else {
+		c.connection.SetReadDeadline(time.Now().Add(10 * time.Millisecond))
 	}
 
 	fmt.Println("Connect true")
