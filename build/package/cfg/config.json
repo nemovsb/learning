@@ -1,0 +1,16 @@
+{
+  "http_server": {
+    "port": "8081",
+    "read_timeout": 10,
+    "write_timeout": 10
+  },
+  "redis": {
+    "host": "redis",
+    "port": "6379"
+  },
+  "tcp_server": {
+    "host": "tcpserver",
+    "port": "9999"
+  },
+  "zap_logger_mode": "development"
+}

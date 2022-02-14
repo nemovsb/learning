@@ -1,0 +1,55 @@
+definitions:
+  app.IncValueRequestModel:
+    properties:
+      key:
+        type: string
+      val:
+        type: integer
+    type: object
+  model.Task1Response:
+    properties:
+      key:
+        type: string
+      val:
+        type: integer
+    type: object
+host: localhost:8081
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /test1:
+    post:
+      consumes:
+      - application/json
+      description: get string by ID
+      parameters:
+      - description: Advertisers IDs
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/app.IncValueRequestModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Task1Response'
+      summary: Show an account
+      tags:
+      - tests
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
