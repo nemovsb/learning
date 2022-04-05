@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"go.uber.org/zap"
 	"io"
 	"net"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 type StringConvertTCP struct {

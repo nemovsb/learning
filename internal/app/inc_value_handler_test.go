@@ -5,13 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"learning/pkg/dockertests"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 )
 
 func TestIncValueHandle(t *testing.T) {
@@ -30,6 +31,9 @@ func TestIncValueHandle(t *testing.T) {
 
 	req, err := http.NewRequest("POST", "http://localhost:8081/test1",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{"key": "%s", "val": %s}`, keyStr, valStr))))
+	if err != nil {
+		t.Fatal(err)
+	}
 	req2, err := http.NewRequest("POST", "http://localhost:8081/test1",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{"key": "%s", "val": %s}`, keyStr, valStr))))
 	if err != nil {
@@ -77,11 +81,13 @@ func TestIncValueHandleNotJSON(t *testing.T) {
 	}
 	testHandler := NewIncValueHandler(testClient, zap.NewNop())
 
-	requestBody := fmt.Sprint("NotJSONNotJSONNotJSON")
+	requestBody := "NotJSONNotJSONNotJSON"
 
 	req, err := http.NewRequest("POST", "http://localhost:8081/test1",
 		bytes.NewBuffer([]byte(requestBody)))
-
+	if err != nil {
+		t.Fatal(err)
+	}
 	rr := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(rr)
 	ctx.Request = req
@@ -113,7 +119,9 @@ func TestIncValueHandleStrData(t *testing.T) {
 
 	req, err := http.NewRequest("POST", "http://localhost:8081/test1",
 		bytes.NewBuffer([]byte(fmt.Sprintf(`{"key": "%s", "val": %s}`, keyStr, valStr))))
-
+	if err != nil {
+		t.Fatal(err)
+	}
 	rr := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(rr)
 	ctx.Request = req

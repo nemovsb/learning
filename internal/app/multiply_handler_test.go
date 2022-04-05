@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
 )
 
 type StringConvertMock struct {
@@ -28,7 +29,7 @@ func NewStringConvertMock(logger *zap.Logger, config TCPConfig) *StringConvertMo
 	}
 }
 
-func (s *StringConvertMock) MultipleStrTCP(reqStr string) (resStr string, err error) {
+func (s *StringConvertMock) MultipleStrTCP(reqStr string, conn TCPConnector) (resStr string, err error) {
 	type TestPair [][]string
 	testArr := TestPair{
 		[]string{
@@ -73,7 +74,10 @@ func TestMultiplyHandle(t *testing.T) {
 
 	logger := zap.NewNop()
 
-	testTcpHandler := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	const (
 		key1 string = "x"
@@ -131,7 +135,10 @@ func TestMultiplyHandleNotJSONReq(t *testing.T) {
 
 	logger := zap.NewNop()
 
-	testTcpHandler := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	const (
 		key1 string = "x"
@@ -165,7 +172,10 @@ func TestMultiplyHandleTCPApp(t *testing.T) {
 
 	logger := zap.NewNop()
 
-	testTcpHandler := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	const (
 		key1 string = "x"
@@ -211,7 +221,10 @@ func TestMultiplyHandleRemoteData(t *testing.T) {
 
 	logger := zap.NewNop()
 
-	testTcpHandler := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	const (
 		key1 string = "x"
