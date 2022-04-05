@@ -3,8 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	errors2 "github.com/pkg/errors"
-	"go.uber.org/zap"
 	"learning/internal/app"
 	"learning/internal/configuration/di"
 	"learning/internal/http_server"
@@ -14,6 +12,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
+
+	errors2 "github.com/pkg/errors"
+	"go.uber.org/zap"
 
 	group "github.com/oklog/run"
 )
@@ -57,11 +59,11 @@ func main() {
 		return
 	}
 
-	//TCPConnection, err := app.NewTCPConnect(di.GetTCPConfig(config))
+	TCPConnection, err := app.NewTCPConnection(di.GetTCPConfig(config), 30*time.Second)
 
 	redisHandler := app.NewIncValueHandler(redisConnection, logger)
 	hmacHandler := app.NewHMACHandler(logger)
-	tcpHandler, err := app.NewTCPHandler(di.GetTCPConfig(config), app.NewStringConvertTCP(logger, di.GetTCPConfig(config)), logger)
+	tcpHandler, err := app.NewTCPHandler(di.GetTCPConfig(config), app.NewStringConvertTCP(logger, di.GetTCPConfig(config)), TCPConnection, logger)
 	fmt.Printf("\ntcp handler: %+v\n", tcpHandler)
 	if err != nil {
 		log.Println("tcp service can't start:", err)

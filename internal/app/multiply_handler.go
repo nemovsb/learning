@@ -2,13 +2,13 @@ package app
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type TCPConfig struct {
@@ -28,12 +28,13 @@ type TCPHandler struct {
 	CommonHandler
 }
 
-func NewTCPHandler(config TCPConfig, strConv StringConverter, logger *zap.Logger) (*TCPHandler, error) {
-	conn, err := NewTCPConnection(config, 30*time.Second)
+func NewTCPHandler(config TCPConfig, strConv StringConverter, conn TCPConnector, logger *zap.Logger) (*TCPHandler, error) {
+	//conn, err := NewTCPConnection(config, 30*time.Second)
 
-	if err != nil {
-		return nil, err
-	}
+	//if err != nil {
+	//	return nil, err
+	//}
+
 	return &TCPHandler{
 		config:  config,
 		connect: conn,

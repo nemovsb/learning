@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
@@ -26,6 +28,16 @@ func NewStringConvertMock(logger *zap.Logger, config TCPConfig) *StringConvertMo
 		config: config,
 		reqStr: "",
 		resStr: "",
+	}
+}
+
+func NewTCPConnectionMock(config TCPConfig, holdConnTime time.Duration) *TCPConnection {
+
+	var conn net.Conn
+
+	return &TCPConnection{
+		config:     config,
+		connection: conn,
 	}
 }
 
@@ -74,7 +86,7 @@ func TestMultiplyHandle(t *testing.T) {
 
 	logger := zap.NewNop()
 
-	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), NewTCPConnectionMock(config, 30*time.Second), logger)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -135,7 +147,7 @@ func TestMultiplyHandleNotJSONReq(t *testing.T) {
 
 	logger := zap.NewNop()
 
-	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), NewTCPConnectionMock(config, 30*time.Second), logger)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -172,7 +184,7 @@ func TestMultiplyHandleTCPApp(t *testing.T) {
 
 	logger := zap.NewNop()
 
-	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), NewTCPConnectionMock(config, 30*time.Second), logger)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -221,7 +233,7 @@ func TestMultiplyHandleRemoteData(t *testing.T) {
 
 	logger := zap.NewNop()
 
-	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), logger)
+	testTcpHandler, err := NewTCPHandler(config, NewStringConvertMock(logger, config), NewTCPConnectionMock(config, 30*time.Second), logger)
 	if err != nil {
 		t.Fatal(err)
 	}
